@@ -1,6 +1,11 @@
-# MICU Night Shift Scheduler
+# 🏥 MICU Night Shift Scheduler
 
-A web application for scheduling night shifts for physicians at Rush University Medical Center's Medical Intensive Care Unit (MICU).
+A professional web application for scheduling night shifts for physicians at Rush University Medical Center's Medical Intensive Care Unit (MICU).
+
+![Rush University Medical Center](https://img.shields.io/badge/Rush_University-Medical_Center-00573F?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzAwNTczRiIvPgogIDxwYXRoIGQ9Ik0xNiA0IEwxNiAyOCBNNCAxNiBMMjggMTYiIHN0cm9rZT0iI0NGQjUzQiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+)
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)
+![Flask](https://img.shields.io/badge/Flask-2.3-000000?style=for-the-badge&logo=flask)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-336791?style=for-the-badge&logo=postgresql)
 
 ## Features
 
