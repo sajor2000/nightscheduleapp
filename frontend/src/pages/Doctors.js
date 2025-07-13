@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS, API_CONFIG } from '../config/api';
 import './Doctors.css';
 
 function Doctors() {
@@ -17,7 +18,7 @@ function Doctors() {
 
   const loadDoctors = async () => {
     try {
-      const response = await axios.get(`/api/doctors?active=${!showInactive}`);
+      const response = await axios.get(`${API_ENDPOINTS.doctors}?active=${!showInactive}`, API_CONFIG);
       setDoctors(response.data);
     } catch (error) {
       console.error('Error loading doctors:', error);
@@ -37,7 +38,7 @@ function Doctors() {
     setMessage('');
 
     try {
-      await axios.post('/api/doctors', newDoctor);
+      await axios.post(API_ENDPOINTS.addDoctor, newDoctor, API_CONFIG);
       setNewDoctor({ name: '', initials: '' });
       await loadDoctors();
       setMessage('Doctor added successfully!');
@@ -59,7 +60,7 @@ function Doctors() {
     }
 
     try {
-      await axios.delete(`/api/doctors/${doctorId}`);
+      await axios.delete(API_ENDPOINTS.deleteDoctor(doctorId), API_CONFIG);
       await loadDoctors();
       setMessage(`${doctorName} has been deactivated`);
       setTimeout(() => setMessage(''), 3000);
@@ -70,7 +71,7 @@ function Doctors() {
 
   const handleActivate = async (doctorId, doctorName) => {
     try {
-      await axios.post(`/api/doctors/${doctorId}/activate`);
+      await axios.post(API_ENDPOINTS.activateDoctor(doctorId), {}, API_CONFIG);
       await loadDoctors();
       setMessage(`${doctorName} has been activated`);
       setTimeout(() => setMessage(''), 3000);

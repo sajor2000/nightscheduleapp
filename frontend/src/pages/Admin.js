@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Select from 'react-select';
 import axios from 'axios';
+import { API_ENDPOINTS, API_CONFIG } from '../config/api';
 import './Admin.css';
 
 function Admin() {
@@ -32,7 +33,7 @@ function Admin() {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('/api/doctors');
+      const response = await axios.get(API_ENDPOINTS.doctors, API_CONFIG);
       setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -43,8 +44,8 @@ function Admin() {
     setLoading(true);
     try {
       const [prefResponse, schedResponse] = await Promise.all([
-        axios.get(`/api/preferences?month=${selectedMonth}`),
-        axios.get(`/api/schedule?month=${selectedMonth}`)
+        axios.get(API_ENDPOINTS.preferences(selectedMonth), API_CONFIG),
+        axios.get(API_ENDPOINTS.getSchedule(selectedMonth), API_CONFIG)
       ]);
       
       setPreferences(prefResponse.data);
@@ -79,7 +80,7 @@ function Admin() {
     setMessage('');
     
     try {
-      await axios.post(`/api/generate?month=${selectedMonth}`);
+      await axios.post(API_ENDPOINTS.generateSchedule(selectedMonth), {}, API_CONFIG);
       await loadMonthData();
       setMessage('Schedule generated successfully!');
       setTimeout(() => setMessage(''), 3000);
@@ -99,10 +100,10 @@ function Admin() {
     if (!editingDate) return;
 
     try {
-      await axios.post('/api/schedule/edit', {
+      await axios.post(API_ENDPOINTS.editSchedule, {
         date: editingDate,
         doctor_id: doctorId
-      });
+      }, API_CONFIG);
       
       await loadMonthData();
       setEditingDate(null);
@@ -115,11 +116,11 @@ function Admin() {
   };
 
   const handleExportPDF = () => {
-    window.open(`/api/export/pdf?month=${selectedMonth}`, '_blank');
+    window.open(API_ENDPOINTS.exportPDF(selectedMonth), '_blank');
   };
 
   const handleExportICS = (doctorInitials) => {
-    window.open(`/api/export/ics?month=${selectedMonth}&doctor=${doctorInitials}`, '_blank');
+    window.open(API_ENDPOINTS.exportICS(selectedMonth, doctorInitials), '_blank');
   };
 
   const getCalendarEvents = () => {

@@ -102,11 +102,12 @@ htmlcov/
 .env.*
 !.env.example
 
-# Replit
-.replit_disk_cache/
-.cache/
-.config/
-.upm/
+# Vercel
+.vercel
+.env.local
+
+# Deployment
+backend/
 
 # Backup files
 *.bak

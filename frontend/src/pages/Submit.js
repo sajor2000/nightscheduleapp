@@ -4,6 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
+import { API_ENDPOINTS, API_CONFIG } from '../config/api';
 import './Submit.css';
 
 function Submit() {
@@ -28,7 +29,7 @@ function Submit() {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get('/api/doctors');
+      const response = await axios.get(API_ENDPOINTS.doctors, API_CONFIG);
       const options = response.data.map(doc => ({
         value: doc.id,
         label: `${doc.name} (${doc.initials})`
@@ -64,13 +65,13 @@ function Submit() {
     setMessage('');
 
     try {
-      await axios.post('/api/submit', {
+      await axios.post(API_ENDPOINTS.submitPreferences, {
         doctor_id: selectedDoctor.value,
         month: selectedMonth,
         unavailable: unavailableDates,
         preferred: preferredDates,
         desired_shifts: desiredShifts
-      });
+      }, API_CONFIG);
 
       setShowSuccess(true);
       setMessage('Preferences submitted successfully!');

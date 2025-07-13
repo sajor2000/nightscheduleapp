@@ -51,14 +51,25 @@ A professional web application for scheduling night shifts for physicians at Rus
    - Backend: `cd backend && python app.py`
    - Frontend: `cd frontend && npm start`
 
-### Deployment on Replit
+### Deployment
 
-1. Fork/import this repository to Replit
-2. The application will automatically:
-   - Install dependencies
-   - Initialize the database
-   - Build the React frontend
-   - Start the Flask server
+The application uses **Vercel + Supabase** for a modern, serverless deployment:
+- **Frontend & Backend**: Deployed on [Vercel](https://vercel.com)
+- **Database**: Hosted on [Supabase](https://supabase.com)
+
+#### Quick Deploy to Vercel
+1. Fork this repository
+2. Create a [Supabase](https://supabase.com) project and note the database URL
+3. Import your repo to [Vercel](https://vercel.com)
+4. Set environment variables in Vercel dashboard:
+   - `DATABASE_URL=postgresql://postgres.xxx:password@db.xxx.supabase.co:5432/postgres`
+   - `FLASK_ENV=production`
+   - `PYTHONPATH=/var/task`
+5. Deploy automatically!
+
+The backend runs as Vercel serverless functions at `/api/*` endpoints.
+
+📖 **[Full Deployment Guide](docs/DEPLOYMENT.md)**
 
 ## Usage
 
