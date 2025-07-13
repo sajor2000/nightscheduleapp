@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import Select from 'react-select';
 import axios from 'axios';
 import { API_ENDPOINTS, API_CONFIG } from '../config/api';
 import './Admin.css';
@@ -29,7 +28,7 @@ function Admin() {
     if (selectedMonth) {
       loadMonthData();
     }
-  }, [selectedMonth]);
+  }, [selectedMonth, loadMonthData]);
 
   const fetchDoctors = async () => {
     try {
@@ -40,7 +39,7 @@ function Admin() {
     }
   };
 
-  const loadMonthData = async () => {
+  const loadMonthData = useCallback(async () => {
     setLoading(true);
     try {
       const [prefResponse, schedResponse] = await Promise.all([
@@ -69,7 +68,7 @@ function Admin() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedMonth]);
 
   const handleGenerateSchedule = async () => {
     if (!window.confirm('Generate new schedule? This will overwrite any manual edits.')) {

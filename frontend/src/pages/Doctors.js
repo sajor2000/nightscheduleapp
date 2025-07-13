@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_ENDPOINTS, API_CONFIG } from '../config/api';
 import './Doctors.css';
@@ -12,11 +12,7 @@ function Doctors() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
 
-  useEffect(() => {
-    loadDoctors();
-  }, [showInactive]);
-
-  const loadDoctors = async () => {
+  const loadDoctors = useCallback(async () => {
     try {
       const response = await axios.get(`${API_ENDPOINTS.doctors}?active=${!showInactive}`, API_CONFIG);
       setDoctors(response.data);
@@ -24,7 +20,11 @@ function Doctors() {
       console.error('Error loading doctors:', error);
       setMessage('Error loading doctors');
     }
-  };
+  }, [showInactive]);
+
+  useEffect(() => {
+    loadDoctors();
+  }, [loadDoctors]);
 
   const handleAddDoctor = async (e) => {
     e.preventDefault();
