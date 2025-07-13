@@ -1,46 +1,89 @@
-from flask import request, jsonify
-from _shared import create_app, db, Doctor
+import json
+import urllib.parse
 
 def handler(request):
     """Handle doctor-related operations"""
-    app = create_app()
-    
-    with app.app_context():
-        # Ensure tables exist
-        db.create_all()
+    try:
+        from _shared import create_app, db, Doctor
         
-        if request.method == 'GET':
-            # Get all doctors
-            active_only = request.args.get('active', 'true').lower() == 'true'
-            query = Doctor.query
-            if active_only:
-                query = query.filter_by(active=True)
-            doctors = query.order_by(Doctor.name).all()
-            return jsonify([d.to_dict() for d in doctors])
+        app = create_app()
         
-        elif request.method == 'POST':
-            # Add new doctor
-            data = request.get_json()
-            if not data.get('name') or not data.get('initials'):
-                return jsonify({'error': 'Name and initials are required'}), 400
+        with app.app_context():
+            # Ensure tables exist
+            db.create_all()
             
-            # Check if initials already exist
-            existing = Doctor.query.filter_by(initials=data['initials']).first()
-            if existing:
-                return jsonify({'error': 'Doctor with these initials already exists'}), 400
+            if request.method == 'GET':
+                # Get all doctors
+                active_only = request.args.get('active', 'true').lower() == 'true'
+                query = Doctor.query
+                if active_only:
+                    query = query.filter_by(active=True)
+                doctors = query.order_by(Doctor.name).all()
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json'},
+                    'body': json.dumps([d.to_dict() for d in doctors])
+                }
             
-            doctor = Doctor(
-                name=data['name'],
-                initials=data['initials'].upper()
-            )
+            elif request.method == 'POST':
+                # Add new doctor
+                try:
+                    body = json.loads(request.body) if hasattr(request, 'body') else request.get_json()
+                except:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json'},
+                        'body': json.dumps({'error': 'Invalid JSON in request body'})
+                    }
+                
+                if not body.get('name') or not body.get('initials'):
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json'},
+                        'body': json.dumps({'error': 'Name and initials are required'})
+                    }
+                
+                # Check if initials already exist
+                existing = Doctor.query.filter_by(initials=body['initials']).first()
+                if existing:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json'},
+                        'body': json.dumps({'error': 'Doctor with these initials already exists'})
+                    }
+                
+                doctor = Doctor(
+                    name=body['name'],
+                    initials=body['initials'].upper()
+                )
+                
+                try:
+                    db.session.add(doctor)
+                    db.session.commit()
+                    return {
+                        'statusCode': 201,
+                        'headers': {'Content-Type': 'application/json'},
+                        'body': json.dumps(doctor.to_dict())
+                    }
+                except Exception as e:
+                    db.session.rollback()
+                    return {
+                        'statusCode': 500,
+                        'headers': {'Content-Type': 'application/json'},
+                        'body': json.dumps({'error': 'Failed to add doctor'})
+                    }
             
-            try:
-                db.session.add(doctor)
-                db.session.commit()
-                return jsonify(doctor.to_dict()), 201
-            except Exception as e:
-                db.session.rollback()
-                return jsonify({'error': 'Failed to add doctor'}), 500
-        
-        else:
-            return jsonify({'error': 'Method not allowed'}), 405
+            else:
+                return {
+                    'statusCode': 405,
+                    'headers': {'Content-Type': 'application/json'},
+                    'body': json.dumps({'error': 'Method not allowed'})
+                }
+                
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json'},
+            'body': json.dumps({'error': f'Server error: {str(e)}'})
+        }
