@@ -1,7 +1,4 @@
 {
-  "name": "micu-scheduler",
-  "version": 2,
-  "framework": "create-react-app",
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/build",
   "installCommand": "cd frontend && npm install",
@@ -10,9 +7,6 @@
     "api/**/*.py": {
       "runtime": "python3.9"
     }
-  },
-  "env": {
-    "PYTHONPATH": "/var/task"
   },
   "rewrites": [
     {

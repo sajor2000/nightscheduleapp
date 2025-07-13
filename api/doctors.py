@@ -1,10 +1,10 @@
 from flask import request, jsonify
 from _shared import create_app, db, Doctor
 
-app = create_app()
-
 def handler(request):
     """Handle doctor-related operations"""
+    app = create_app()
+    
     with app.app_context():
         # Ensure tables exist
         db.create_all()
